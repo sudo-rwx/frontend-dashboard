@@ -1,4 +1,4 @@
-import { generateAIReply } from "./openai";
+import { generateAIReply } from "./ai/brain";
 import { supabase } from "./supabase";
 
 export type AgentTask = {
@@ -8,13 +8,11 @@ export type AgentTask = {
   tenant_id: string;
 };
 
-// Multi-agent roles simulation
 export async function runAgent(task: AgentTask) {
   switch (task.type) {
     case "analyze": {
       const result = await generateAIReply(
-        `Analyze this social media data and extract insights: ${JSON.stringify(task.payload)}`,
-        "analytical"
+        `Analyze this social media data and extract insights: ${JSON.stringify(task.payload)}`
       );
 
       await supabase.from("agent_logs").insert({
@@ -29,8 +27,7 @@ export async function runAgent(task: AgentTask) {
 
     case "reply": {
       const result = await generateAIReply(
-        `Generate a high-quality reply for: ${task.payload.message}`,
-        task.payload.tone || "friendly"
+        `Generate a high-quality reply for: ${task.payload.message}`
       );
 
       await supabase.from("agent_logs").insert({
@@ -45,8 +42,7 @@ export async function runAgent(task: AgentTask) {
 
     case "plan": {
       const result = await generateAIReply(
-        `Create a 7-day social media content plan based on: ${JSON.stringify(task.payload)}`,
-        "strategic"
+        `Create a 7-day social media content plan based on: ${JSON.stringify(task.payload)}`
       );
 
       await supabase.from("agent_logs").insert({
