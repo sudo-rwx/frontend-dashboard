@@ -1,20 +1,29 @@
-import { NextResponse } from "next/server";
-import { generateAIReply } from "../../../../lib/openai";
+import { NextResponse } from 'next/server';
+import { runAIBrain } from '@/lib/ai/brain';
 
 export async function POST(req: Request) {
   try {
-    const { message, tone } = await req.json();
+    const { message } = await req.json();
 
     if (!message) {
-      return NextResponse.json({ error: "Message required" }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Message required' },
+        { status: 400 }
+      );
     }
 
-    const reply = await generateAIReply(message, tone || "friendly");
+    const ai = await runAIBrain({
+      userMessage: message
+    });
 
-    return NextResponse.json({ reply });
+    return NextResponse.json({
+      reply: ai.reply,
+      sentiment: ai.sentiment,
+      confidence: ai.confidence
+    });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "AI error" },
+      { error: err.message || 'AI error' },
       { status: 500 }
     );
   }
