@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 export default function HomePage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [metrics, setMetrics] = useState<any>(null);
+  const [workflows, setWorkflows] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const [autopilot, setAutopilot] = useState(true);
 
@@ -13,6 +14,12 @@ export default function HomePage() {
       .then((res) => res.json())
       .then((data) => {
         setMetrics(data.metrics);
+      });
+
+    fetch('/api/workflows')
+      .then((res) => res.json())
+      .then((data) => {
+        setWorkflows(data.workflows);
       });
 
     setMessages([
@@ -147,42 +154,34 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800">
-            <h2 className="text-3xl font-bold mb-6">Automation Center</h2>
+          <div className="space-y-6">
+            <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800">
+              <h2 className="text-3xl font-bold mb-6">Automation Center</h2>
 
-            <div className="space-y-4">
-              <div className="bg-black rounded-2xl p-5 border border-zinc-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Instagram AI</p>
-                    <p className="text-zinc-500 text-sm">Auto reply system</p>
-                  </div>
-                  <span className="text-green-400">Running</span>
-                </div>
-              </div>
+              <div className="space-y-4">
+                {workflows.map((workflow) => (
+                  <div
+                    key={workflow.id}
+                    className="bg-black rounded-2xl p-5 border border-zinc-800"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{workflow.name}</p>
+                        <p className="text-zinc-500 text-sm">
+                          {workflow.trigger} → {workflow.action}
+                        </p>
+                      </div>
 
-              <div className="bg-black rounded-2xl p-5 border border-zinc-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Lead Capture</p>
-                    <p className="text-zinc-500 text-sm">CRM integration</p>
+                      <span className="text-green-400">
+                        {workflow.enabled ? 'Running' : 'Offline'}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-green-400">Active</span>
-                </div>
-              </div>
-
-              <div className="bg-black rounded-2xl p-5 border border-zinc-800">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Sales Funnel AI</p>
-                    <p className="text-zinc-500 text-sm">Conversion optimizer</p>
-                  </div>
-                  <span className="text-yellow-400">Learning</span>
-                </div>
+                ))}
               </div>
             </div>
 
-            <div className="mt-8 bg-black rounded-2xl p-6 border border-zinc-800">
+            <div className="bg-zinc-900 rounded-3xl p-6 border border-zinc-800">
               <p className="text-zinc-500 mb-2">System Status</p>
               <h3 className="text-4xl font-bold text-green-400">
                 {autopilot ? 'FULLY OPERATIONAL' : 'OFFLINE'}
