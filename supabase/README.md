@@ -1,0 +1,1 @@
+Supabase schemas and migrations for AI automation platform.
