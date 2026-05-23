@@ -9,3 +9,8 @@ export async function runAIBrain(input: { userMessage: string }) {
     confidence: 0.9
   };
 }
+
+export async function generateAIReply(message: string) {
+  const result = await geminiModel.generateContent(message);
+  return result.response.text();
+}
