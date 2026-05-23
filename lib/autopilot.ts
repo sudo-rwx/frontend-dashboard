@@ -1,4 +1,4 @@
-import { generateAIReply } from "./openai";
+import { generateAIReply } from "./ai/brain";
 import { supabase } from "./supabase";
 
 export type AutopilotTask = {
@@ -10,13 +10,12 @@ export type AutopilotTask = {
   tenant_id: string;
 };
 
-// Core engine: decides what AI should do automatically
 export async function processAutopilotTask(task: AutopilotTask) {
   switch (task.type) {
     case "reply": {
       if (!task.message) return null;
 
-      const reply = await generateAIReply(task.message, task.tone || "friendly");
+      const reply = await generateAIReply(task.message);
 
       await supabase.from("ai_actions").insert({
         tenant_id: task.tenant_id,
@@ -30,8 +29,7 @@ export async function processAutopilotTask(task: AutopilotTask) {
 
     case "post": {
       const postContent = await generateAIReply(
-        "Create a social media post about productivity and AI automation.",
-        task.tone || "professional"
+        "Create a social media post about productivity and AI automation."
       );
 
       await supabase.from("posts").insert({
@@ -44,8 +42,7 @@ export async function processAutopilotTask(task: AutopilotTask) {
 
     case "engage": {
       const response = await generateAIReply(
-        "Write a short engaging comment to increase interaction.",
-        "friendly"
+        "Write a short engaging comment to increase interaction."
       );
 
       await supabase.from("ai_actions").insert({
@@ -62,7 +59,6 @@ export async function processAutopilotTask(task: AutopilotTask) {
   }
 }
 
-// Queue processor (future scaling)
 export async function runAutopilotQueue(tenantId: string) {
   const { data } = await supabase
     .from("autopilot_queue")
