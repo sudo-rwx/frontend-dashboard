@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { runAIBrain } from '@/lib/ai/brain';
+import { runAIBrain } from '../../../../lib/ai/brain';
 
 export async function POST(req: Request) {
   try {
